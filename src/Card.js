@@ -1,9 +1,16 @@
-import React from 'react'
+import React from 'react';
+import './Card.css';
 
 function Card({ card }) {
   return (
-    <img src={card.img} alt={card.code} />
-  )
+    <img
+      className='Card'
+      src={card.img}
+      alt={card.code}
+      style={{
+        transform: `rotate(${card.displayAngle}deg)`
+      }} />
+  );
 }
 
-export default Card
+export default Card;

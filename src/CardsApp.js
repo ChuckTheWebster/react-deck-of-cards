@@ -11,6 +11,11 @@ function CardsApp() {
   });
   const [cards, setCards] = useState([]);
 
+    useEffect(function fetchDeckWhenMounted() {
+      shuffleDeck();
+    }, []
+    );
+
   async function shuffleDeck() {
     const response = await axios.get(`${BASE_URL}/new/shuffle/?deck_count=1`);
     setDeck({
@@ -19,11 +24,6 @@ function CardsApp() {
     });
   }
 
-  useEffect(function fetchDeckWhenMounted() {
-    shuffleDeck();
-  }, []
-  );
-
   async function drawCard() {
     const response = await axios.get(`${BASE_URL}${deck.id}/draw/?count=1`);
     const cardData = response.data.cards[0];
@@ -31,8 +31,18 @@ function CardsApp() {
     const card = {
       img: cardData.image,
       code: cardData.code,
+      displayAngle: Math.random() * 360 - 720
     };
     setCards(prevCards => [...prevCards, card]);
+  }
+
+  function shuffleDeckClearPile() {
+    setDeck({
+      id: null,
+      isLoading: true
+    });
+    shuffleDeck();
+    setCards([]);
   }
 
   if (deck.isLoading) return <i>Shuffling...</i>;
@@ -40,8 +50,9 @@ function CardsApp() {
   return (
     <div>
       <h1>Cards App</h1>
-      <CardsList cards={cards}/>
       <button onClick={drawCard}>Get Card!</button>
+      <button onClick={shuffleDeckClearPile}>Shuffle the Deck!</button>
+      <CardsList cards={cards}/>
     </div>
   );
 }
